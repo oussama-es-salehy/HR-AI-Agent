@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR AI Dashboard</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { 
+  margin:0; 
+  padding:0; 
+  box-sizing:border-box; 
+}
+
+body { 
+  font-family: 'Inter', sans-serif; 
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 3rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+ 
+  width: 100%;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.navbar .logo { 
+  font-size: 2rem; 
+  font-weight: 700; 
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navbar .logo i {
+  font-size: 1.8rem;
+  color: #4ecdc4;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.navbar label {
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.navbar label::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.navbar label:hover::before {
+  left: 100%;
+}
+
+.navbar label:hover { 
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* RADIO BUTTONS HIDDEN */
+input[type="radio"] { display: none; }
+
+/* HERO */
+.hero {
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
+}
+
+.hero-content { 
+  position: relative; 
+  z-index: 2; 
+  max-width: 1000px; 
+  padding: 0 2rem;
+}
+
+.hero-content h1 { 
+  font-size: 4.5rem; 
+  margin-bottom: 1.5rem; 
+  font-weight: 700;
+  background: linear-gradient(45deg, #ffffff, #f0f0f0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.2;
+}
+
+.hero-content p { 
+  font-size: 1.4rem; 
+  margin-bottom: 3rem; 
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.hero-content .cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.hero-content .btn {
+  background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+  color: white;
+  padding: 1.2rem 2.5rem;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-content .btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.hero-content .btn:hover::before {
+  left: 100%;
+}
+
+.hero-content .btn:hover { 
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+}
+
+/* HIDE HERO WHEN CARD ACTIVE */
+#job-fit:checked ~ .hero,
+#salary:checked ~ .hero,
+#resume-screen:checked ~ .hero,
+#candidate-priority:checked ~ .hero { 
+  display: none; 
+}
+
+/* CARDS */
+.container { 
+  padding: 3rem 2rem; 
+  max-width: 1200px; 
+  margin: 0 auto; 
+  min-height: 100vh;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 3rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  margin-top: 2rem;
+  display: none;
+  transition: all 0.5s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+}
+
+.card h2 { 
+  margin-bottom: 2rem; 
+  color: #ffffff; 
+  display: flex; 
+  align-items: center; 
+  gap: 1rem;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.card h2 i {
+  font-size: 2.2rem;
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.card label { 
+  display: block; 
+  margin-bottom: 0.8rem; 
+  font-weight: 500; 
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card input, .card select, .card textarea {
+  width: 100%; 
+  padding: 1rem 1.5rem; 
+  border-radius: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.card input::placeholder, .card textarea::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.card input:focus, .card select:focus, .card textarea:focus { 
+  border-color: #4ecdc4;
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-card {
+  background: linear-gradient(45deg, #4ecdc4, #44a08d);
+  color: white;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 2rem auto 0;
+  box-shadow: 0 10px 30px rgba(78, 205, 196, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-card:hover::before {
+  left: 100%;
+}
+
+.btn-card:hover { 
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(78, 205, 196, 0.4);
+}
+
+.output { 
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem; 
+  border-radius: 15px; 
+  min-height: 80px; 
+  margin-top: 2rem; 
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Courier New', monospace;
+  line-height: 1.6;
+}
+
+/* SHOW CARD ON CHECK */
+#job-fit:checked ~ .container #jobFitCard,
+#salary:checked ~ .container #salaryCard,
+#resume-screen:checked ~ .container #resumeCard,
+#candidate-priority:checked ~ .container #priorityCard { 
+  display: block; 
+  animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* RESPONSIVE */
+@media(max-width: 768px){
+  .navbar { 
+    flex-direction: column; 
+    align-items: center;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .navbar label { 
+    margin: 0;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .hero-content h1 { 
+    font-size: 3rem; 
+  }
+  
+  .hero-content p { 
+    font-size: 1.2rem; 
+  }
+  
+  .hero-content .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .card {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+  
+  .container {
+    padding: 1rem;
+  }
+}
+
+@media(max-width: 480px){
+  .hero-content h1 { 
+    font-size: 2.5rem; 
+  }
+  
+  .card h2 {
+    font-size: 1.5rem;
+  }
+  
+  .card h2 i {
+    font-size: 1.8rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="logo">
+    <i class="fas fa-robot"></i>
+    HR AI
+  </div>
+  <div class="nav-links">
+    <label for="job-fit">
+      <i class="fas fa-user-check"></i>
+      Job Fit
+    </label>
+    <label for="salary">
+      <i class="fas fa-dollar-sign"></i>
+      Salary
+    </label>
+    <label for="resume-screen">
+      <i class="fas fa-file-alt"></i>
+      Resume Screening
+    </label>
+    <label for="candidate-priority">
+      <i class="fas fa-trophy"></i>
+      Candidate Priority
+    </label>
+  </div>
+</div>
+
+<input type="radio" name="model" id="job-fit">
+<input type="radio" name="model" id="salary">
+<input type="radio" name="model" id="resume-screen">
+<input type="radio" name="model" id="candidate-priority">
+
+<div class="hero">
+  <div class="hero-content">
+    <h1><i class="fas fa-brain"></i> HR AI Automation</h1>
+    <p>Revolutionize your hiring process with AI-powered predictions for job fit, salary analysis, resume screening, and candidate prioritization</p>
+    <div class="cta-buttons">
+      <label for="job-fit" class="btn">
+        <i class="fas fa-user-check"></i>
+        Try Job Fit
+      </label>
+      <label for="salary" class="btn">
+        <i class="fas fa-chart-line"></i>
+        Predict Salary
+      </label>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="card" id="jobFitCard">
+    <h2><i class="fas fa-user-check"></i> Job Fit Prediction</h2>
+    <form id="jobFitForm" onsubmit="return false;">
+      <div class="form-group">
+        <label><i class="fas fa-code"></i> Candidate Skills</label>
+        <input type="text" name="candidate_skills" placeholder="e.g., Python, JavaScript, React, Machine Learning" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-bullseye"></i> Required Skills</label>
+        <input type="text" name="required_skills" placeholder="e.g., Python, SQL, Data Analysis" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-graduation-cap"></i> Degree</label>
+        <input type="text" name="degree" placeholder="e.g., Computer Science, Engineering, MBA" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-calendar-alt"></i> Years of Experience</label>
+        <input type="number" name="years_experience" placeholder="e.g., 3" min="0" max="50" required>
+      </div>
+      <button type="submit" class="btn-card">
+        <i class="fas fa-magic"></i>
+        Predict Job Fit
+      </button>
+    </form>
+    <div class="output"></div>
+  </div>
+
+  <div class="card" id="salaryCard">
+    <h2><i class="fas fa-dollar-sign"></i> Salary Prediction</h2>
+    <form id="salaryForm" onsubmit="return false;">
+      <div class="form-group">
+        <label><i class="fas fa-briefcase"></i> Role</label>
+        <input type="text" name="role" placeholder="e.g., Software Engineer, Data Scientist, Product Manager" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-calendar-alt"></i> Years of Experience</label>
+        <input type="number" name="years_experience" placeholder="e.g., 5" min="0" max="50" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-graduation-cap"></i> Degree</label>
+        <input type="text" name="degree" placeholder="e.g., Bachelor's, Master's, PhD" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-building"></i> Company Size</label>
+        <select name="company_size" required>
+          <option value="">Select Company Size</option>
+          <option value="Small">Small (1-50 employees)</option>
+          <option value="Medium">Medium (51-500 employees)</option>
+          <option value="Large">Large (500+ employees)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-map-marker-alt"></i> Location</label>
+        <input type="text" name="location" placeholder="e.g., San Francisco, New York, Remote" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-layer-group"></i> Level</label>
+        <input type="text" name="level" placeholder="e.g., Junior, Mid, Senior, Lead" required>
+      </div>
+      <button type="submit" class="btn-card">
+        <i class="fas fa-chart-line"></i>
+        Predict Salary
+      </button>
+    </form>
+    <div class="output"></div>
+  </div>
+
+  <div class="card" id="resumeCard">
+    <h2><i class="fas fa-file-alt"></i> Resume Screening</h2>
+    <form id="resumeForm" onsubmit="return false;">
+      <div class="form-group">
+        <label><i class="fas fa-user"></i> Resume Text</label>
+        <textarea name="resume_text" placeholder="Paste the candidate's resume content here..." rows="6" required></textarea>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-briefcase"></i> Job Description</label>
+        <textarea name="job_description_text" placeholder="Paste the job description here..." rows="6" required></textarea>
+      </div>
+      <button type="submit" class="btn-card">
+        <i class="fas fa-search"></i>
+        Screen Resume
+      </button>
+    </form>
+    <div class="output"></div>
+  </div>
+
+  <div class="card" id="priorityCard">
+    <h2><i class="fas fa-trophy"></i> Candidate Priority</h2>
+    <form id="priorityForm" onsubmit="return false;">
+      <div class="form-group">
+        <label><i class="fas fa-chart-bar"></i> Experience Band</label>
+        <input type="text" name="years_exp_band" placeholder="e.g., 3-5 years, 5-10 years, Senior" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-percentage"></i> Skills Coverage</label>
+        <input type="text" name="skills_coverage_band" placeholder="e.g., 80%, High, Medium, Low" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-handshake"></i> Referral Flag</label>
+        <select name="referral_flag" required>
+          <option value="">Select Referral Status</option>
+          <option value="1">Yes - Referred by employee</option>
+          <option value="0">No - Direct application</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-language"></i> English Level</label>
+        <input type="text" name="english_level" placeholder="e.g., Native, Fluent, Intermediate, Basic" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-map-marker-alt"></i> Location Match</label>
+        <input type="text" name="location_match" placeholder="e.g., Perfect, Good, Partial, No Match" required>
+      </div>
+      <button type="submit" class="btn-card">
+        <i class="fas fa-star"></i>
+        Predict Priority
+      </button>
+    </form>
+    <div class="output"></div>
+  </div>
+
+</div>
+
+</body>
+</html>
+
+<script>
+async function callAPI(url, payload, outputDiv, type) {
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        let displayText = "";
+
+        switch(type) {
+            case "job_fit":
+                displayText = `Prediction: ${data.prediction === 1 ? "Good Fit ✅" : "Not Fit ❌"}\nProbability: ${(data.fit_probability*100).toFixed(2)}%`;
+                break;
+            case "salary":
+                displayText = `Predicted Salary: ${data.prediction} MAD`;
+                break;
+            case "resume":
+                displayText = `Resume Screening Result: ${data.prediction === 1 ? "Pass ✅" : "Fail ❌"}`;
+                break;
+            case "priority":
+                const priorityMap = {0: "High ✅", 1: "Mid ⚡", 2: "Low ❌"};
+                displayText = `Candidate Priority Score: ${priorityMap[data.prediction] || data.prediction}`;
+                break;
+            default:
+                displayText = JSON.stringify(data, null, 2);
+        }
+
+        document.querySelector(outputDiv).innerText = displayText;
+    } catch (err) {
+        document.querySelector(outputDiv).innerText = "Error: " + err;
+    }
+}
+
+// JOB FIT
+document.getElementById("jobFitForm").addEventListener("submit", () => {
+    const form = document.getElementById("jobFitForm");
+    const payload = {
+        candidate_skills: form.candidate_skills.value,
+        required_skills: form.required_skills.value,
+        degree: form.degree.value,
+        years_experience: parseInt(form.years_experience.value)
+    };
+    callAPI("/job_fit/predict", payload, "#jobFitCard .output", "job_fit");
+});
+
+// SALARY
+document.getElementById("salaryForm").addEventListener("submit", () => {
+    const form = document.getElementById("salaryForm");
+    const payload = {
+        role: form.role.value,
+        years_experience: parseInt(form.years_experience.value),
+        degree: form.degree.value,
+        company_size: form.company_size.value,
+        location: form.location.value,
+        level: form.level.value
+    };
+    callAPI("/salary/predict", payload, "#salaryCard .output", "salary");
+});
+
+// RESUME
+document.getElementById("resumeForm").addEventListener("submit", () => {
+    const form = document.getElementById("resumeForm");
+    const payload = {
+        resume_text: form.resume_text.value,
+        jd_text: form.job_description_text.value
+    };
+    callAPI("/resume_screen/predict", payload, "#resumeCard .output", "resume");
+});
+
+// CANDIDATE PRIORITY
+document.getElementById("priorityForm").addEventListener("submit", () => {
+    const form = document.getElementById("priorityForm");
+    const payload = {
+        years_exp_band: form.years_exp_band.value,
+        skills_coverage_band: form.skills_coverage_band.value,
+        referral_flag: form.referral_flag.value,
+        english_level: form.english_level.value,
+        location_match: form.location_match.value
+    };
+    callAPI("/candidate_priority/predict", payload, "#priorityCard .output", "priority");
+});
+</script>
