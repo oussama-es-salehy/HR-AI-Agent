@@ -1,0 +1,10 @@
+Flask==2.3.3
+pandas
+numpy
+scikit-learn
+imbalanced-learn
+tensorflow
+nltk
+azure-ai-inference
+azure-core
+python-dotenv
