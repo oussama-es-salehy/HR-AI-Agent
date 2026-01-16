@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+"""from flask import Flask, render_template
 from apis.salary_api import salary_bp
 from apis.job_fit_api import job_fit_bp
 from apis.resume_api import resume_bp
@@ -20,4 +20,22 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True)"""
+
+
+import os
+from flask import Flask, render_template
+from agent.agent_api import agent_bp
+
+app = Flask(__name__)
+
+app.register_blueprint(agent_bp, url_prefix="/agent")
+
+@app.route("/")
+def index():
+    return "HR AI Agent is running ✅"
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
+    
